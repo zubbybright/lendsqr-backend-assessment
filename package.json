@@ -1,0 +1,15 @@
+{
+  "name": "lendsqr-backend-assessment",
+  "version": "1.0.0",
+  "description": "Backend Wallet Service built with Node.js, TypeScript, KnexJS, and MySQL for the Lendsqr Backend Engineering Assessment.",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
