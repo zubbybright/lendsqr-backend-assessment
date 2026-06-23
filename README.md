@@ -84,7 +84,23 @@ The following transaction types are supported:
 This design provides a clear audit trail for all wallet activities and supports transactional consistency during money movement operations.
 
 ## ER Diagram
-*To be completed*
+
+The wallet service is built around three core entities:
+
+- Users
+- Wallets
+- Transactions
+
+Relationships:
+
+- A User has one Wallet (1:1)
+- A Wallet belongs to one User
+- A Wallet can have many Transactions (1:M)
+- A Transaction belongs to one Wallet
+
+The ER Diagram for the application is shown below:
+
+![ER Diagram](./docs/erd.png)
 
 ## API Documentation
 
@@ -184,7 +200,59 @@ An authentication middleware validates the token, identifies the user, and attac
 This simplified authentication approach satisfies the assessment requirements while keeping the implementation lightweight and focused on wallet functionality.
 
 ## Transaction Strategy
-*To be completed*
+
+Since the application manages financial transactions, maintaining data consistency is critical. Database transactions are used to ensure that wallet balances and transaction records remain synchronized.
+
+### Funding a Wallet
+
+When a wallet is funded:
+
+1. The wallet balance is increased.
+2. A transaction record is created.
+3. Both operations are executed within a database transaction.
+
+If any operation fails, all changes are rolled back.
+
+### Withdrawing Funds
+
+When a user withdraws funds:
+
+1. The wallet balance is validated to ensure sufficient funds are available.
+2. The wallet balance is decreased.
+3. A withdrawal transaction record is created.
+4. Both operations are executed within a database transaction.
+
+If any operation fails, all changes are rolled back.
+
+### Transferring Funds
+
+Transfers involve two wallets and therefore require stronger consistency guarantees.
+
+When a transfer is initiated:
+
+1. The sender's wallet balance is validated.
+2. The sender's wallet is debited.
+3. The recipient's wallet is credited.
+4. A `TRANSFER_SENT` transaction record is created for the sender.
+5. A `TRANSFER_RECEIVED` transaction record is created for the recipient.
+6. Both transaction records share the same transaction reference.
+7. All operations are executed within a single database transaction.
+
+If any step fails, the entire transaction is rolled back to prevent partial updates and maintain data integrity.
+
+### Transaction References
+
+Each financial operation is assigned a unique transaction reference.
+
+For transfers, both the sender and recipient transaction records share the same reference, allowing both sides of the transaction to be traced and audited easily.
+
+### Transaction Status
+
+Transactions may have one of the following statuses:
+
+- PENDING
+- SUCCESS
+- FAILED
 
 ## Security Considerations
 *To be completed*
