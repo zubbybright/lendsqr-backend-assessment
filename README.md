@@ -162,7 +162,7 @@ Returns all transactions associated with the authenticated user's wallet.
 Detailed request and response examples will be added as implementation progresses.
 
 ## Authentication Strategy
-The assessment requirements specify that a full authentication system is not required. Therefore, a simplified token-based authentication approach is used.
+The assessment requirements specify that a full authentication system is not required. Therefore, the application uses a simplified faux authentication approach to protect wallet operations without introducing the complexity of JWTs, sessions, or OAuth.
 
 ### Registration
 Users register with:
@@ -173,18 +173,30 @@ Users register with:
 - Phone number
 - Password
 
-Passwords are hashed before being stored in the database.
+During registration:
 
-### Login
-Users authenticate using their email address and password.
+1. User input is validated.
+2. The user's email is checked against the Lendsqr Adjutor Karma blacklist.
+3. The password is hashed using bcrypt before storage.
+4. A user record is created.
+5. A wallet is automatically created with an initial balance of `0.00`.
 
-Upon successful authentication, the API returns a token which is used to access protected endpoints.
+User creation and wallet creation are executed within a single database transaction to ensure consistency.
+
+### Authentication
+For the purpose of this assessment, authenticated requests use the following format:
+
+```
+Authorization: Bearer <user_id>
+```
 
 Example:
 
 ```
-Authorization: Bearer user-1
+Authorization: Bearer 1
 ```
+
+The authentication middleware extracts the user ID from the authorization header, validates that the user exists, and attaches the authenticated user to the request object.
 
 ### Protected Routes
 The following endpoints require authentication:
@@ -195,9 +207,26 @@ The following endpoints require authentication:
 - Get Wallet Balance
 - Get Transaction History
 
-An authentication middleware validates the token, identifies the user, and attaches the authenticated user's information to the request.
+### Authentication Flow
 
-This simplified authentication approach satisfies the assessment requirements while keeping the implementation lightweight and focused on wallet functionality.
+1. Client sends the user ID in the Authorization header.
+2. Authentication middleware validates the format.
+3. The middleware retrieves the user from the database.
+4. The authenticated user is attached to the request object.
+5. The request proceeds to the protected route handler.
+
+### Why This Approach?
+The assessment explicitly states that a full authentication system is not required and that a faux token-based authentication approach is acceptable.
+
+This implementation keeps the solution lightweight while still demonstrating:
+
+- Route protection
+- Authentication middleware
+- User identification
+- Authorization of wallet operations
+- Separation of concerns
+
+In a production environment, this approach would be replaced with a secure authentication mechanism such as JWT access tokens, refresh tokens, session management, and role-based access control.
 
 ## Transaction Strategy
 
