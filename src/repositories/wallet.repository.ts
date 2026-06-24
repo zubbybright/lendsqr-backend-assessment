@@ -20,4 +20,29 @@ export class WalletRepository {
       .where({ user_id: userId })
       .first();
   }
+
+  async findById(walletId: number) {
+    return db("wallets")
+      .where({ id: walletId })
+      .first();
+  }
+
+  async updateBalance(
+    walletId: number,
+    balance: number,
+    trx?: Knex.Transaction
+  ) {
+    const query = trx ?? db;
+
+    await query("wallets")
+      .where({ id: walletId })
+      .update({
+        balance,
+        updated_at: new Date(),
+      });
+
+    return query("wallets")
+      .where({ id: walletId })
+      .first();
+  }
 }

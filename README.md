@@ -104,21 +104,12 @@ The ER Diagram for the application is shown below:
 
 ## API Documentation
 
-### Authentication
-
-#### Login
-
-```
-POST /api/auth/login
-```
-Authenticates a user and returns a token used for subsequent requests.
-
 ### Users
 
 #### Create User
 
 ```
-POST /api/users
+POST /api/v1/auth/register
 ```
 Creates a new user account after validating that the user is not present on the Lendsqr Adjutor Karma blacklist. A wallet is automatically created for successful registrations.
 
@@ -127,35 +118,35 @@ Creates a new user account after validating that the user is not present on the 
 #### Fund Wallet
 
 ```
-POST /api/wallets/fund
+POST /api/v1/wallets/fund
 ```
 Adds funds to the authenticated user's wallet.
 
 #### Transfer Funds
 
 ```
-POST /api/wallets/transfer
+POST /api/v1/wallets/transfer
 ```
 Transfers funds from the authenticated user's wallet to another user's wallet.
 
 #### Withdraw Funds
 
 ```
-POST /api/wallets/withdraw
+POST /api/v1/wallets/withdraw
 ```
 Withdraws funds from the authenticated user's wallet.
 
 #### Get Wallet Balance
 
 ```
-GET /api/wallets/balance
+GET /api/v1/wallets/balance
 ```
 Returns the current balance of the authenticated user's wallet.
 
 #### Get Transaction History
 
 ```
-GET /api/wallets/transactions
+GET /api/v1/wallets/transactions
 ```
 Returns all transactions associated with the authenticated user's wallet.
 
