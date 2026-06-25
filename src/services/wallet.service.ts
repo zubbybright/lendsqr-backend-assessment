@@ -47,7 +47,11 @@ export class WalletService {
         trx
       );
 
-      return updatedWallet;
+
+      return {
+        ...updatedWallet,
+        balance: Number(updatedWallet.balance),
+      };
     });
   }
 
@@ -66,7 +70,7 @@ export class WalletService {
 
     if (Number(wallet.balance) < amount) {
       throw new AppError(400, "Insufficient wallet balance");
-      
+
     }
 
     return db.transaction(async (trx) => {
@@ -91,7 +95,10 @@ export class WalletService {
         trx
       );
 
-      return updatedWallet;
+      return {
+        ...updatedWallet,
+        balance: Number(updatedWallet.balance),
+      };
     });
   }
 
