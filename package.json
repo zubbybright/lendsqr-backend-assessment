@@ -9,7 +9,7 @@
   "scripts": {
     "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
     "build": "tsc",
-    "start": "node dist/server.js",
+    "start": "node dist/src/server.js",
     "test": "cross-env NODE_ENV=test jest --runInBand",
     "test:migrate": "cross-env NODE_ENV=test knex migrate:latest --env development",
     "migrate:make": "knex migrate:make",
