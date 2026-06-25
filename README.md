@@ -13,17 +13,62 @@ This project implements a wallet service that allows users to:
 ## Features
 
 - User onboarding
-- Wallet creation
+- Automatic wallet creation
 - Wallet funding
-- Wallet transfers
 - Wallet withdrawals
-- Karma blacklist verification
-- Faux token authentication
-- Transaction management
-- Unit testing
+- Wallet transfers
+- Lendsqr Adjutor Karma blacklist verification
+- Faux authentication middleware
+- Transaction history management
+- Database transaction support
+- Centralized error handling
+- Request validation using Zod
+- Automated integration testing with Jest and Supertest
 
 ## Architecture
-*To be completed*
+The application follows a layered architecture to promote separation of concerns and maintainability.
+
+Client
+
+│
+
+▼
+
+Routes
+
+│
+
+▼
+
+Controllers
+
+│
+
+▼
+
+Services
+
+│
+
+▼
+
+Repositories
+
+│
+
+▼
+
+MySQL Database
+
+### Components
+- **Routes** map incoming HTTP requests to the appropriate controllers.
+- **Controllers** validate incoming requests, invoke business logic, and return HTTP responses.
+- **Services** contain the core business logic, including wallet operations, user registration, authentication, and transaction management.
+- **Repositories** encapsulate all database interactions using KnexJS.
+- **Middleware** handles authentication and centralized error handling.
+- **Validators** use Zod to validate incoming request payloads before they reach the business layer.
+
+This architecture keeps responsibilities clearly separated, making the application easier to test, maintain, and extend.
 
 ## Database Design
 The application uses a relational database design with three core entities: Users, Wallets, and Transactions.
@@ -118,37 +163,23 @@ Creates a new user account after validating that the user is not present on the 
 #### Fund Wallet
 
 ```
-POST /api/v1/wallets/fund
+POST /api/v1/wallet/fund
 ```
 Adds funds to the authenticated user's wallet.
 
 #### Transfer Funds
 
 ```
-POST /api/v1/wallets/transfer
+POST /api/v1/wallet/transfer
 ```
 Transfers funds from the authenticated user's wallet to another user's wallet.
 
 #### Withdraw Funds
 
 ```
-POST /api/v1/wallets/withdraw
+POST /api/v1/wallet/withdraw
 ```
 Withdraws funds from the authenticated user's wallet.
-
-#### Get Wallet Balance
-
-```
-GET /api/v1/wallets/balance
-```
-Returns the current balance of the authenticated user's wallet.
-
-#### Get Transaction History
-
-```
-GET /api/v1/wallets/transactions
-```
-Returns all transactions associated with the authenticated user's wallet.
 
 Detailed request and response examples will be added as implementation progresses.
 
@@ -275,13 +306,101 @@ Transactions may have one of the following statuses:
 - FAILED
 
 ## Security Considerations
-*To be completed*
+The application implements several security measures to protect user data and maintain transaction integrity.
+
+- Passwords are hashed using **bcrypt** before being stored in the database.
+- User input is validated using **Zod** before processing.
+- Email addresses are verified against the Lendsqr Adjutor Karma blacklist before onboarding.
+- Wallet operations are protected using authentication middleware.
+- Database transactions are used to prevent partial updates during wallet operations.
+- Sensitive configuration values such as database credentials and API keys are managed through environment variables.
+- Centralized error handling prevents internal implementation details from being exposed to API consumers.
+
+For the purpose of this assessment, a simplified authentication mechanism is used. In a production environment, this would be replaced with JWT authentication, refresh tokens, HTTPS enforcement, rate limiting, request logging, and role-based authorization.
 
 ## Testing
-*To be completed*
+The project uses **Jest** and **Supertest** to verify the application's core business functionality.
+
+The implemented tests cover:
+
+- User registration
+- Duplicate email validation
+- Wallet funding
+- Wallet withdrawal
+- Insufficient balance validation
+- Wallet transfers
+- Authentication middleware
+
+External calls to the Lendsqr Adjutor Karma API are mocked during testing to ensure deterministic and repeatable test execution.
+
+Run the test suite with:
+
+```bash
+npm test
+```
 
 ## Setup Instructions
-*To be completed*
+### Clone the repository
+
+```bash
+git clone <repository-url>
+```
+
+### Install dependencies
+
+```bash
+npm install
+```
+
+### Create environment variables
+
+Create a `.env` file with the following values:
+
+```env
+PORT=3000
+DB_HOST=localhost
+DB_PORT=3306
+DB_USER=root
+DB_PASSWORD=your_password
+DB_NAME=lendsqr_wallet
+ADJUTOR_BASE_URL=https://adjutor.lendsqr.com
+ADJUTOR_API_KEY=your_api_key
+```
+
+### Run database migrations
+
+```bash
+npm run migrate:latest
+```
+
+### Start the application
+
+```bash
+npm run dev
+```
+
+### Run tests
+
+```bash
+npm test
+```
 
 ## Deployment
-*To be completed*
+The application is deployment-ready and can be hosted on platforms such as Render, Railway, or any Node.js-compatible environment.
+
+Deployment steps:
+
+1. Provision a MySQL database.
+2. Configure the required environment variables.
+3. Install project dependencies.
+4. Run database migrations.
+5. Start the application.
+
+Example production commands:
+
+```bash
+npm install
+npm run migrate:latest
+npm run build
+npm start
+```
