@@ -2,13 +2,15 @@ import { Request, Response } from "express";
 
 import { AuthService } from "../services/auth.service";
 import { registerUserSchema } from "../validators/auth.validator";
+import { NextFunction } from "express";
 
 export class AuthController {
   private authService = new AuthService();
 
   register = async (
     req: Request,
-    res: Response
+    res: Response,
+    next: NextFunction
   ): Promise<void> => {
     try {
       const validatedData =
@@ -25,10 +27,7 @@ export class AuthController {
         data: result,
       });
     } catch (error: any) {
-      res.status(400).json({
-        success: false,
-        message: error.message,
-      });
+      next(error);
     }
   };
 }

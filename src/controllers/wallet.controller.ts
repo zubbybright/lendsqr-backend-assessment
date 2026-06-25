@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 
 import { WalletService } from "../services/wallet.service";
+import { NextFunction } from "express";
 
 import {
   fundWalletSchema,
@@ -13,7 +14,8 @@ export class WalletController {
 
   fundWallet = async (
     req: Request,
-    res: Response
+    res: Response,
+    next: NextFunction
   ): Promise<void> => {
     try {
       const { amount } =
@@ -31,16 +33,14 @@ export class WalletController {
         data: result,
       });
     } catch (error: any) {
-      res.status(400).json({
-        success: false,
-        message: error.message,
-      });
+      next(error);
     }
   };
 
   withdrawFunds = async (
     req: Request,
-    res: Response
+    res: Response,
+    next: NextFunction
   ): Promise<void> => {
     try {
       const { amount } =
@@ -58,16 +58,14 @@ export class WalletController {
         data: result,
       });
     } catch (error: any) {
-      res.status(400).json({
-        success: false,
-        message: error.message,
-      });
+      next(error);
     }
   };
 
   transferFunds = async (
     req: Request,
-    res: Response
+    res: Response,
+    next: NextFunction
   ): Promise<void> => {
     try {
       const {
@@ -88,10 +86,7 @@ export class WalletController {
         data: result,
       });
     } catch (error: any) {
-      res.status(400).json({
-        success: false,
-        message: error.message,
-      });
+      next(error);
     }
   };
 }

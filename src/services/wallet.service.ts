@@ -4,10 +4,13 @@ import { db } from "../database/knex";
 
 import { WalletRepository } from "../repositories/wallet.repository";
 import { TransactionRepository } from "../repositories/transaction.repository";
+import { AppError } from "../errors/AppError";
 
 export class WalletService {
-  private walletRepository = new WalletRepository();
-  private transactionRepository = new TransactionRepository();
+  constructor(
+    private walletRepository = new WalletRepository(),
+    private transactionRepository = new TransactionRepository()
+  ) { }
 
   async fundWallet(
     userId: number,
@@ -19,7 +22,7 @@ export class WalletService {
       );
 
     if (!wallet) {
-      throw new Error("Wallet not found");
+      throw new AppError(404, "Wallet not found");
     }
 
     return db.transaction(async (trx) => {
@@ -58,13 +61,12 @@ export class WalletService {
       );
 
     if (!wallet) {
-      throw new Error("Wallet not found");
+      throw new AppError(404, "Wallet not found");
     }
 
     if (Number(wallet.balance) < amount) {
-      throw new Error(
-        "Insufficient wallet balance"
-      );
+      throw new AppError(400, "Insufficient wallet balance");
+      
     }
 
     return db.transaction(async (trx) => {
@@ -109,19 +111,17 @@ export class WalletService {
       );
 
     if (!senderWallet) {
-      throw new Error("Sender wallet not found");
+      throw new AppError(404, "Sender wallet not found");
     }
 
     if (!recipientWallet) {
-      throw new Error("Recipient wallet not found");
+      throw new AppError(404, "Recipient wallet not found");
     }
 
     if (
       Number(senderWallet.balance) < amount
     ) {
-      throw new Error(
-        "Insufficient wallet balance"
-      );
+      throw new AppError(400, "Insufficient wallet balance");
     }
 
     const reference = randomUUID();

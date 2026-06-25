@@ -10,7 +10,7 @@
     "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
     "build": "tsc",
     "start": "node dist/server.js",
-    "test": "jest",
+    "test": "cross-env NODE_ENV=test jest --runInBand",
     "migrate:make": "knex migrate:make",
     "migrate:latest": "knex migrate:latest",
     "migrate:rollback": "knex migrate:rollback"
@@ -38,6 +38,7 @@
     "@types/morgan": "^1.9.10",
     "@types/node": "^26.0.0",
     "@types/supertest": "^7.2.0",
+    "cross-env": "^10.1.0",
     "eslint": "^10.5.0",
     "jest": "^30.4.2",
     "prettier": "^3.8.4",

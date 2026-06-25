@@ -5,19 +5,21 @@ import { RegisterUserDto } from "../types/auth.types";
 import { UserRepository } from "../repositories/user.repository";
 import { WalletRepository } from "../repositories/wallet.repository";
 import { KarmaService } from "./karma.service";
+import { AppError } from "../errors/AppError";
 
 export class AuthService {
-  private userRepository = new UserRepository();
-  private walletRepository = new WalletRepository();
-  private karmaService = new KarmaService();
-
+  constructor(
+    private userRepository = new UserRepository(),
+    private walletRepository = new WalletRepository(),
+    private karmaService = new KarmaService()
+  ) { }
   async register(userData: RegisterUserDto) {
     const existingEmail = await this.userRepository.findByEmail(
       userData.email
     );
 
     if (existingEmail) {
-      throw new Error("Email already exists");
+      throw new AppError(409, "Email already exists");
     }
 
     const existingPhone = await this.userRepository.findByPhone(
@@ -25,7 +27,7 @@ export class AuthService {
     );
 
     if (existingPhone) {
-      throw new Error("Phone number already exists");
+      throw new AppError(409, "Phone number already exists");
     }
 
     const isBlacklisted = await this.karmaService.isBlacklisted(
@@ -33,9 +35,7 @@ export class AuthService {
     );
 
     if (isBlacklisted) {
-      throw new Error(
-        "User is blacklisted and cannot be onboarded"
-      );
+      throw new AppError(403, "User is blacklisted and cannot be onboarded");
     }
 
     const passwordHash = await bcrypt.hash(
