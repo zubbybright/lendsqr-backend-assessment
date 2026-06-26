@@ -386,21 +386,8 @@ npm test
 ```
 
 ## Deployment
-The application is deployment-ready and can be hosted on platforms such as Render, Railway, or any Node.js-compatible environment.
+The API is deployed on Render with a MySQL database hosted on Railway.
 
-Deployment steps:
+Production API url :
 
-1. Provision a MySQL database.
-2. Configure the required environment variables.
-3. Install project dependencies.
-4. Run database migrations.
-5. Start the application.
-
-Example production commands:
-
-```bash
-npm install
-npm run migrate:latest
-npm run build
-npm start
-```
+https://nzubechi-lendsqr-be-test.onrender.com
