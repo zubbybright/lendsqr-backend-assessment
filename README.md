@@ -391,3 +391,8 @@ The API is deployed on Render with a MySQL database hosted on Railway.
 Production API url :
 
 https://nzubechi-lendsqr-be-test.onrender.com
+
+## Documentation
+The API is documented at :
+
+https://documenter.getpostman.com/view/36142471/2sBXwyFmJz
